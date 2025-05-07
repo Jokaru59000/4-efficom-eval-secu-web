@@ -1,11 +1,12 @@
 const jwt = require("jsonwebtoken");
 const Role = require('../model/role.schema.js');
 
+
 const auth = (role) => {
     return (req, res, next) => {
         const token = req.headers.authorization?.split(" ")[1];
         try {
-            req.payload = jwt.verify(token, "ZXZhbCBzZWN1IHdlYg==");
+            req.payload = jwt.verify(token, process.env.JWT_KEY); // Le token devrait être pris dans le fichier .env
             const roleToCheck = Role.getByName(role);
             if(role && req.payload.roles && !req.payload.roles.includes(roleToCheck.id)){
                 return res.status(403).json({message: "Vous n'avez pas les droits pour réaliser cette action"});
