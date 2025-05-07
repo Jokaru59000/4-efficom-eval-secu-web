@@ -38,7 +38,13 @@ const create = async (req, res, next) => {
 }
 
 const update = async (req, res, next) => {
+    
     let result = await User.updateOne(req.body, { id: req.params.id });
+    try {
+        req.body.password = bcrypt.hashSync(req.body.password, 10)
+    } catch (e) {
+        return res.status(400).json({ error: "Error: cannot generate hash for password" });
+    }
     res.status(201).json(result);
 }
 
